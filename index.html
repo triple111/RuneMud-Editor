@@ -1,0 +1,76 @@
+<html>
+
+<body>
+	<link rel="stylesheet" type="text/css" href="style.css">
+	<script type="text/javascript" src="XMLWriter.js"></script>
+	<div id="toolbar-top" class="toolbar-top">
+		<button onclick="changeEditMode(0);"><img src="select.png"><span style="display:block;">Select</span></button>
+		<button onclick="changeEditMode(1);"><img src="paint.png"><span style="display:block;">Paint Tiles</span></button>
+		<button onclick="changeEditMode(2);"><img src="border.png"><span style="display:block;">Borders</span></button>
+	</div>
+
+	<div id="toolbar-left" class="toolbar-left">
+
+		Tile Properties
+		<div></div>
+
+		Tile Appearance
+		<div class="span-formatter">
+			<div class="span-wrapper">
+				<span id="brushSpan0" onclick="selectedSpan=0">X</span>
+				<span id="brushSpan1" onclick="selectedSpan=1">X</span>
+				<span id="brushSpan2" onclick="selectedSpan=2">X</span>
+			</div>
+		</div>
+		<label for="inputTilestyle">Tile Style</label>
+		<input id="inputTilestyle" maxlength="3;" spellcheck="false" value="XXX" style="width:25%;"
+			oninput="updateFormatter()" />
+		<br>
+		Foreground
+		<div id="color-palette" class="color-palette">
+			<div onclick="colorSpanFG('i');" style="background-color: rgb(0,0,0);"></div>
+			<div onclick="colorSpanFG('j');" style="background-color: rgb(128,0,0);"></div>
+			<div onclick="colorSpanFG('k');" style="background-color: rgb(0,128,0);"></div>
+			<div onclick="colorSpanFG('l');" style="background-color: rgb(128,128,0);"></div>
+			<div onclick="colorSpanFG('m');" style="background-color: rgb(0,0,128);"></div>
+			<div onclick="colorSpanFG('n');" style="background-color: rgb(128,0,128);"></div>
+			<div onclick="colorSpanFG('o');" style="background-color: rgb(0,128,128);"></div>
+			<div onclick="colorSpanFG('p');" style="background-color: rgb(192,192,192);"></div>
+			<br style="clear:both" />
+			<div onclick="colorSpanFG('a');" style="background-color: rgb(128,128,128);"></div>
+			<div onclick="colorSpanFG('b');" style="background-color: rgb(255,0,0);"></div>
+			<div onclick="colorSpanFG('c');" style="background-color: rgb(0,255,0);"></div>
+			<div onclick="colorSpanFG('d');" style="background-color: rgb(255,255,0);"></div>
+			<div onclick="colorSpanFG('e');" style="background-color: rgb(0,0,255);"></div>
+			<div onclick="colorSpanFG('f');" style="background-color: rgb(255,0,255);"></div>
+			<div onclick="colorSpanFG('g');" style="background-color: rgb(0,255,255);"></div>
+			<div onclick="colorSpanFG('h');" style="background-color: rgb(255,255,255);"></div>
+		</div>
+		<br style="clear:both" />
+
+		Background
+		<div id="color-palette" class="color-palette">
+			<div onclick="colorSpanBG('0');" style="background-color: rgb(0,0,0);"></div>
+			<div onclick="colorSpanBG('1');" style="background-color: rgb(128,0,0);"></div>
+			<div onclick="colorSpanBG('2');" style="background-color: rgb(0,128,0);"></div>
+			<div onclick="colorSpanBG('3');" style="background-color: rgb(128,128,0);"></div>
+			<div onclick="colorSpanBG('4');" style="background-color: rgb(0,0,128);"></div>
+			<div onclick="colorSpanBG('5');" style="background-color: rgb(128,0,128);"></div>
+			<div onclick="colorSpanBG('6');" style="background-color: rgb(0,128,128);"></div>
+			<div onclick="colorSpanBG('7');" style="background-color: rgb(192,192,192);"></div>
+		</div>
+		<button onclick="loadMap()">Load</button>
+		<button onclick="saveMap()">Save</button>
+
+	</div>
+
+	<div id="mapcanvas" class="mapcanvas">
+	</div>
+
+
+	<script src="editor.js"></script>
+
+
+</body>
+
+</html>

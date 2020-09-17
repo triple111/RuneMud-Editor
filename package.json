@@ -1,0 +1,13 @@
+{
+  "name": "runemud-editor",
+  "version": "0.1.0",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "devDependencies": {
+    "electron": "^10.1.1",
+    "keycode": "^2.2.0",
+    "xmldom": "^0.3.0"
+  }
+}

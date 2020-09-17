@@ -1,88 +1,126 @@
-body{
-background-color: black;
+html, body {
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
 }
 
-div{
-font-family:consolas;
-color: white;
-font-size:14px;
+body {
+    background-color: rgb(255, 255, 255);
+    font-family: 'Segoe UI';
+    font-size: 9pt;
+    flex-flow: column;
 }
 
-input{
-	font-family:consolas;
-	font-size:14px;
-	border: 1px solid gray;
-	background-color: black;
-	color: gray;
+/*------------ TOP TOOLBAR ------------*/
+
+.toolbar-top {
+    font-family: 'Segoe UI';
+    font-size: 9pt;
+    height: 80px;
+    width: 100%;
+    background-color: rgb(245, 246, 247);
+    border: 1px solid rgb(218, 219, 220);
 }
 
-.mapcanvas{
-width: 50%;
-display: grid;
-grid-template-columns: repeat(10, 24px);
-grid-column-gap: 0px;
-grid-row-gap:0px;
-border: 1px solid white;
+.toolbar-top button {
+    font-family: 'Segoe UI';
+    font-size: 9pt;
+    vertical-align: top;
+    display: inline-block;
+    text-align: center;
+    height: 100%;
+    width: auto;
+    border: 0px;
+    background-color: rgb(245, 246, 247);
+    border: 1px solid rgb(245, 246, 247);
 }
 
-.toolbox{
-position: absolute;
-top: 0px;
-right: 0px;
-width: 300px;
-height: 100%;
-border: 1px solid white;
+.toolbar-top button:hover {
+    border: 1px solid rgb(164, 206, 249);
 }
 
-.colorpalette{
-grid-template-columns: repeat(8, 24px);
-display: grid;
+.toolbar-top button:focus {
+    background-color: rgb(201, 224, 247);
+    border: 1px solid rgb(164, 206, 249);
+    outline: none;
 }
 
-.letterformatter{
-width: 50%;
-margin: 20px auto 20px auto;
-padding: 20px 0 20px 0;
-border: 1px solid gray;
+/*------------ LEFT TOOLBAR ------------*/
+
+.toolbar-left {
+    float: left;
+    height: 90%;
+    width: 20%;
+    background-color: rgb(245, 246, 247);
 }
 
-.letter{
-display:inline;
-text-align:center;
+.span-formatter {
+    width: 90%;
+    margin: 0 auto;
+    margin-bottom: 5px;
+    padding: 20px 0 20px 0;
+    border: 1px solid gray;
+    background-color: black;
+    color: gray;
+    font-size: 14px;
+    text-align: center;
 }
 
-.colorbox{
-height: 20px;
-text-align: center;
+.span-wrapper {
+    display: inline-block;
+    border: 1px solid black;
 }
 
-.colorbox:hover{
-box-shadow: inset 0px 0px 0px 1px white;
+.span-wrapper span {
+    font-family: consolas;
+    font-size: 20px;
+    color: rgb(128, 128, 128);
 }
 
-.tile-default{
-height: auto;
-width: auto;
-text-align: center;
-color: gray;
+.color-palette {}
+
+.color-palette div {
+    float: left;
+    height: 16px;
+    width: 16px;
+    border: 1px solid rgb(245, 246, 247);
 }
 
-.tile-default:hover{
-box-shadow: inset 0px 0px 0px 1px white;
+/*------------ TILE AND CANVAS RELATED STYLES ------------*/
+
+.mapcanvas {
+    float: left;
+    height: 90%;
+    width: 80%;
+    background-color: black;
+    /*background-color: rgb(64, 64, 64);*/
+    overflow: scroll;
+    white-space: nowrap;
 }
 
-.tile-selected{
-text-align: center;
-color: gray;
-box-shadow: inset 0px 0px 0px 1px yellow;
+.tile-wrapper {
+    display: inline-block;
+    border: 1px solid black;
+}
+
+.tile-wrapper:hover {
+    border: 1px solid white;
+}
+
+.tile-wrapper span {
+    font-family: consolas;
+    font-size: 14px;
+    color: rgb(128, 128, 128);
+}
+
+/*------------ FONTS ------------*/
+
+@font-face {
+    font-family: segoe;
+    src: url(segoeui.ttf);
 }
 
 @font-face {
-	font-family: mono;
-	src: url(monosb.ttf);
-}
-
-@font-face {
-	font-family: consolas;
-	src: url(consolab.ttf);
+    font-family: consolas;
+    src: url(consolab.ttf);
 }
