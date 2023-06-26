@@ -2,6 +2,7 @@ html, body {
     padding: 0;
     margin: 0;
     overflow: hidden;
+    user-select: none;
 }
 
 body {
@@ -54,6 +55,11 @@ body {
     background-color: rgb(245, 246, 247);
 }
 
+.tile-properties {
+    background-color: rgb(250, 251, 252);
+    border: 1px solid rgb(219, 220, 221);
+}
+
 .span-formatter {
     width: 90%;
     margin: 0 auto;
@@ -86,6 +92,10 @@ body {
     border: 1px solid rgb(245, 246, 247);
 }
 
+.item-properties input {
+    margin-bottom: 5px;
+}
+
 /*------------ TILE AND CANVAS RELATED STYLES ------------*/
 
 .mapcanvas {
@@ -111,6 +121,36 @@ body {
     font-family: consolas;
     font-size: 14px;
     color: rgb(128, 128, 128);
+}
+
+/*------------ ITEM AND CANVAS RELATED STYLES ------------*/
+
+.itemcanvas {
+    float: left;
+    height: 90%;
+    width: 80%;
+    background-color: black;
+    /*background-color: rgb(64, 64, 64);*/
+    overflow: scroll;
+    white-space: nowrap;
+    font-family: consolas;
+    font-size: 14px;
+    color: rgb(128, 128, 128);
+}
+
+.item-wrapper {
+    display: grid;
+    grid-template-columns: 50px 200px 150px 60px 60px 60px 60px 60px 60px 60px 60px 60px 60px 60px 60px 60px 60px 60px 60px 60px 60px 60px 60px;
+    border-top: 1px solid black;
+    border-bottom: 1px solid rgb(64, 64, 64);
+}
+
+.item-wrapper:hover {
+    border: 1px solid white;
+}
+
+.item-wrapper div {
+    display: inline-block;
 }
 
 /*------------ FONTS ------------*/

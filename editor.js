@@ -28,23 +28,38 @@ class Room {
 }
 
 //Program Start
+const fs = require('fs');
+const dom = require('xmldom');
+const keycode = require('keycode');
+const { TouchBarSlider } = require('electron');
+
 const MAPCANVAS = document.getElementById("mapcanvas");
 const BRUSH_SPAN1 = document.getElementById("brushSpan0");
 const BRUSH_SPAN2 = document.getElementById("brushSpan1");
 const BRUSH_SPAN3 = document.getElementById("brushSpan2");
-const INPUT_TILESTYLE = document.getElementById("inputTilestyle");
-const fs = require('fs');
-const dom = require('xmldom');
-const keycode = require('keycode');
+const INPUT_TILESTYLE = document.getElementById("input-tileStyle");
+const INPUT_TILESTYLE_ENABLED = document.getElementById("input-tileStyle-enabled");
+const INPUT_NAMEBRUSH = document.getElementById("input-nameBrush");
+const INPUT_NAMEBRUSH_ENABLED = document.getElementById("input-nameBrush-enabled");
+const INFO_TILEID = document.getElementById("info-tileid");
+const INFO_ROOMNAME = document.getElementById("info-roomname");
 
 var editMode = 0; //1=selection, 2=paint, 3=border
 var selectedSpan = 0;
+var selectedTile;
 var hoveredTileId = 0;
+var moveTopLeft;
+var moveBottomRight;
 var brushFG = ["p", "p", "p"]; //stores brush span fg colors
 var brushBG = ["0", "0", "0"]; //stores brush span bg colors
 var rooms = []; //array of rooms
+var selectedTileArray = []; //array to hold shift clicked tiles
+var copiedTileArray = [];
 var xMax = 100;
-var yMax = 100;
+var yMax = 200;
+
+var controlDown = false;
+var shiftDown = false;
 
 var id = 0
 for (var y = 0; y < yMax; y++) { //create grid of wrappers/spans, xMax by yMax in dimension
@@ -56,16 +71,44 @@ for (var y = 0; y < yMax; y++) { //create grid of wrappers/spans, xMax by yMax i
 	MAPCANVAS.appendChild(tileBreak);
 }
 
-//---------------------------------FUNCTIONS-------------------------------------------------------
+//-------------------------------------EVENT LISTENERS-------------------------------------------------------
 
 document.onmouseover = function (e) { //get ID of hovered tile
 	tryId = e.target.parentNode.id;
 	if (rooms[tryId] != null) { //make sure that cursor is over a tile not a UI element
 		hoveredTileId = e.target.parentNode.id;
+
+		if (selectedTile === undefined) { //if a tile is not selected, show the hovered tile ID
+			INFO_TILEID.innerHTML = "Tile ID: " + hoveredTileId; //show tile ID in infobox
+			INFO_ROOMNAME.value = rooms[hoveredTileId].roomName;
+		}
 	}
 }
 
 document.addEventListener('keydown', function (e) {
+	if (editMode === 0) {
+		if (keycode(e) === "esc") {
+			resetAllBorders();
+			selectedTile = undefined;
+			selectedTileArray = [];
+		}
+		if (keycode(e) === "ctrl") {
+			controlDown = true;
+		}
+		if (keycode(e) === "shift") {
+			shiftDown = true;
+		}
+		if (keycode(e) === "c" && controlDown === true) {
+			copyTiles();
+		}
+		if (keycode(e) === "v" && controlDown === true) {
+			pasteTiles();
+		}
+		if (keycode(e) === "delete") {
+			deleteTiles();
+		}
+
+	}
 	if (editMode === 2) { //if we are in border mode
 		if (keycode(e) === "w") {
 			makeBorder("north", hoveredTileId);
@@ -82,15 +125,25 @@ document.addEventListener('keydown', function (e) {
 	}
 })
 
+document.addEventListener('keyup', function (e) {
+	if (keycode(e) === "ctrl") {
+		controlDown = false;
+	}
+	if (keycode(e) === "shift") {
+		shiftDown = false;
+	}
+})
+
+//-------------------------------------FUNCTIONS-------------------------------------------------------
+
 function changeEditMode(newMode) {
 	editMode = newMode;
-
+	resetAllBorders();
+	console.log("Mode " + editMode);
 	if (editMode === 0) {
-		resetAllBorders();
 	}
 
 	if (editMode === 1) {
-		resetAllBorders();
 	}
 
 	if (editMode === 2) { //border mode
@@ -98,15 +151,25 @@ function changeEditMode(newMode) {
 			drawBorder(i); //set initial border appearance based off NESW booleans
 		}
 	}
+
+	if (editMode === 3) { //border mode
+
+	}
 }
 
 function clickedOnTile(id) {
+	if (editMode === 0) {
+		selectTile(id);
+	}
 	if (editMode === 1) {
 		paintTile(id); //paint the brush onto the tile
 	}
 
 	if (editMode === 2) {
 	}
+
+	//if (editMode === 3) {
+	//}
 }
 
 function updateFormatter() {
@@ -124,15 +187,121 @@ function loadTileColor(tile) {
 	tile.tileSpanRight.style.backgroundColor = colorcodeToRGB(tile.color.charAt(5));
 }
 
+function selectTile(id) {
+
+	//SINGLE CLICKING - control click and shift click require this first
+	if (shiftDown === false && controlDown === false) {//if shift or control are not held, only select a single tile, reset the borders and clear the copy array
+		if (selectedTile !== undefined) { //if there was a tile previously selected
+			resetAllBorders();
+			selectedTileArray = []; //clear array
+		}
+		selectedTile = id;
+		moveTopLeft = parseInt(selectedTile); //sets top left of copy rect
+		rooms[selectedTile].tile.style.border = "1px solid yellow";//color the selected tile
+		selectedTileArray.push(rooms[selectedTile]);
+	}
+
+	//CONTROL CLICK
+	if (selectedTile !== undefined && controlDown === true) { //allow control click only if a tile was previously selected
+		selectedTile = id; //the selected tile is the clicked tile ID
+		rooms[selectedTile].tile.style.border = "1px solid yellow"; //color the selected tile
+		selectedTileArray.push(rooms[selectedTile]); //add the selected tile to the copy list
+	}
+
+	//SHIFT CLICK
+	if (selectedTile !== undefined && shiftDown === true) { //allow control click only if a tile was previously selected
+		selectedTile = id; //the selected tile is the clicked tile ID
+		moveBottomRight = parseInt(selectedTile);
+		selectedTileArray = [];
+
+		var rows = ((moveBottomRight - (moveBottomRight % 100)) / 100) - ((moveTopLeft - (moveTopLeft % 100)) / 100); // get number of rows
+		var columns = (moveBottomRight % 100) - (moveTopLeft % 100); // get number of columns
+		console.log("Rows:" + rows + " Columns:" + columns);
+
+		for (var y = 0; y < rows + 1; y++) {
+			for (var x = 0; x < columns + 1; x++) {
+				rooms[moveTopLeft + x + (y * 100)].tile.style.border = "1px solid yellow"; //color the selected tile
+				selectedTileArray.push(rooms[moveTopLeft + x + (y * 100)]); //add the selected tile to the copy list
+			}
+		}
+	}
+
+	console.log(selectedTileArray.length);
+	INFO_TILEID.innerHTML = "Tile ID: " + hoveredTileId; //show tile ID in infobox
+	INFO_ROOMNAME.value = rooms[selectedTile].roomName; //show tile name in infobox
+}
+
+function copyTiles() {
+	copiedTileArray = [...selectedTileArray]; //make a copy of the selected tile array to copy
+	console.log("Copied " + copiedTileArray.length + " tiles");
+}
+
+
+function pasteTiles() {
+	var startPosition = copiedTileArray[0].tile.id; //get the starting tile position
+	var endPosition = selectedTileArray[0].tile.id; //get the ending tile position
+	var xOffset = (endPosition % 100) - (startPosition % 100); //calculate the horizontal offset
+	var yOffset = ((endPosition - (endPosition % 100))) - ((startPosition - (startPosition % 100)));
+
+	console.log("X offset:" + xOffset + " Y offset:" + yOffset);
+
+	for (var i = 0; i < copiedTileArray.length; i++) {
+		try {
+			var id = parseInt(copiedTileArray[i].tile.id);
+			id = id + xOffset + yOffset;
+			rooms[id].roomName = copiedTileArray[i].roomName;
+			rooms[id].color = copiedTileArray[i].color;
+			rooms[id].north = copiedTileArray[i].north;
+			rooms[id].east = copiedTileArray[i].east;
+			rooms[id].south = copiedTileArray[i].south;
+			rooms[id].west = copiedTileArray[i].west;
+			rooms[id].tileSpanLeft.innerHTML = copiedTileArray[i].tileSpanLeft.innerHTML;
+			rooms[id].tileSpanCenter.innerHTML = copiedTileArray[i].tileSpanCenter.innerHTML;
+			rooms[id].tileSpanRight.innerHTML = copiedTileArray[i].tileSpanRight.innerHTML;
+			loadTileColor(rooms[id]);
+		}
+
+		catch {
+
+		}
+	}
+}
+
+function deleteTiles() {
+	if (selectedTileArray.length > 0) {
+		for (var i = 0; i < selectedTileArray.length; i++) {
+			var id = selectedTileArray[i].tile.id;
+			console.log("Deleting room " + id);
+
+			rooms[id].roomName = "Blank";
+			rooms[id].color = "ppp000";
+			rooms[id].north = true;
+			rooms[id].east = true;
+			rooms[id].south = true;
+			rooms[id].west = true;
+			rooms[id].tileSpanLeft.innerHTML = ".";
+			rooms[id].tileSpanCenter.innerHTML = ".";
+			rooms[id].tileSpanRight.innerHTML = ".";
+			loadTileColor(rooms[id]);
+		}
+	}
+}
+
 function paintTile(id) {
 	var tile = rooms[id]; //load tile for painting
 
-	tile.tileSpanLeft.innerHTML = BRUSH_SPAN1.innerHTML; //set tileSpan to the Brush
-	tile.tileSpanCenter.innerHTML = BRUSH_SPAN2.innerHTML;
-	tile.tileSpanRight.innerHTML = BRUSH_SPAN3.innerHTML;
+	if (INPUT_TILESTYLE_ENABLED.checked === true) { //if tilestyle is enabled, paint the tile
+		tile.tileSpanLeft.innerHTML = BRUSH_SPAN1.innerHTML; //set tileSpan to the Brush
+		tile.tileSpanCenter.innerHTML = BRUSH_SPAN2.innerHTML;
+		tile.tileSpanRight.innerHTML = BRUSH_SPAN3.innerHTML;
 
-	tile.color = brushFG[0] + brushFG[1] + brushFG[2] + brushBG[0] + brushBG[1] + brushBG[2];
-	loadTileColor(tile);
+		tile.color = brushFG[0] + brushFG[1] + brushFG[2] + brushBG[0] + brushBG[1] + brushBG[2];
+		loadTileColor(tile);
+	}
+
+	if (INPUT_NAMEBRUSH_ENABLED.checked === true) { //if namerush is enabled, change the name of the tile
+		tile.roomName = INPUT_NAMEBRUSH.value;
+	}
 }
 
 function makeBorder(direction, id) {
@@ -239,7 +408,7 @@ function loadMap() {
 	var xmlDoc = parser.parseFromString(xml, "text/xml"); //parse xml string
 	var nodes = xmlDoc.getElementsByTagName("Room"); //get list of room nodes
 
-	if (nodes.length === rooms.length) {
+	try {
 		for (var i = 0; i < nodes.length; i++) { //iterate over list of room nodes and load room properties
 			rooms[i].roomName = nodes[i].getElementsByTagName("name")[0].innerHTML; //load room name
 			var tileString = nodes[i].getElementsByTagName("tile")[0].innerHTML; //load tile characters
@@ -256,8 +425,9 @@ function loadMap() {
 		}
 		alert("Map Loaded Successfully");
 	}
-	else {
-		alert("Map Size Mismatch");
+
+	catch {
+		alert("Map Load Error");
 	}
 }
 

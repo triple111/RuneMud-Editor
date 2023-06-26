@@ -1,0 +1,95 @@
+<html>
+
+<body>
+	<link rel="stylesheet" type="text/css" href="style.css">
+	<script type="text/javascript" src="XMLWriter.js"></script>
+	<div id="toolbar-top" class="toolbar-top">
+		<button onclick="changeEditMode(0);"><img src="select.png"><span style="display:block;">Select</span></button>
+		<button onclick="addEquipment();"><img src="select.png"><span style="display:block;">New Equipment</span></button>
+	</div>
+
+	<div id="toolbar-left" class="toolbar-left">
+		<button onclick="loadItemDB()">Load</button>
+		<button onclick="saveItemDB()">Save</button>
+		<br>
+
+		Item Properties
+		<div class="item-properties">
+
+			<div id="info-itemid">Item ID:</div>
+			<label for="input-name">Name:</label>
+			<input id="input-name" spellcheck="false" value="" style="width:50%;" oninput="createName(selectedItem)" />
+			<br>
+
+			<label for="input-color">Color:</label>
+			<input id="input-color" spellcheck="false" value="" style="width:50%;"
+				oninput="items[selectedItem].color = INPUT_COLOR.value; createName();" />
+			<br>
+
+			<label for="input-shortname">Short Name:</label>
+			<input id="input-shortname" spellcheck="false" value="" style="width:50%;"
+				oninput="createShortname(selectedItem)" />
+			<br>
+
+			<label for="input-shortcolor">Color:</label>
+			<input id="input-shortcolor" spellcheck="false" value="" style="width:50%;"
+				oninput="items[selectedItem].shortcolor = INPUT_SHORTCOLOR.value; createShortname()" />
+			<br>
+
+			<label for="input-weight">Weight:</label>
+			<input id="input-weight"" spellcheck=" false" value="" style="width:10%;"
+				oninput="items[selectedItem].shortcolor = INPUT_SHORTCOLOR.value; createShortname()" />
+
+			<label for="input-highalc">HiAlc:</label>
+			<input id="input-highalc" spellcheck="false" value="" style="width:20%;"
+				oninput="items[selectedItem].shortcolor = INPUT_SHORTCOLOR.value; createShortname()" />
+
+			<label for="input-lowalc">LoAlc:</label>
+			<input id="input-lowalc" spellcheck="false" value="" style="width:20%;"
+				oninput="items[selectedItem].shortcolor = INPUT_SHORTCOLOR.value; createShortname()" />
+			<br>
+
+			<input id="input-stackable" type="checkbox">Stackable</input>
+			<input id="input-tradeable" type="checkbox">Tradeable</input>
+			<input id="input-equipable" type="checkbox">Equipable</input>
+
+		</div>
+		<br>
+
+	</div>
+
+	<div id="itemcanvas" class="itemcanvas">
+		Equipment
+		<div class="item-wrapper">
+
+			<div>ID</div>
+			<div> Name</div>
+			<div> Short</div>
+			<div> Weight</div>
+			<div> HiAlc</div>
+			<div> LoAlc</div>
+			<div> Stack</div>
+			<div> Trade</div>
+			<div> Equip</div>
+			<div> Slot</div>
+			<div> Speed</div>
+			<div> StabA</div>
+			<div> SlashA</div>
+			<div> CrushA</div>
+			<div> MagicA</div>
+			<div> RangeA</div>
+			<div> StabD</div>
+			<div> SlashD</div>
+			<div> CrushD</div>
+			<div> MagicD</div>
+			<div> RangeD</div>
+			<div> Str</div>
+			<div> Pray</div>
+
+		</div>
+
+		<script src="itemeditor.js"></script>
+
+</body>
+
+</html>
