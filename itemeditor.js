@@ -3,7 +3,7 @@ class Item {
         this.item = document.createElement("div"); //create parent div
         this.item.className = "item-wrapper";
         this.item.id = itemID; //assign a number to the item for identification
-        this.item.addEventListener("click", function () { clickedOnitem(this.id) }); //click calls selectitem with this item's ID
+        this.item.addEventListener("click", function() { clickedOnitem(this.id) }); //click calls selectitem with this item's ID
 
         this.name;
         this.color;
@@ -13,14 +13,17 @@ class Item {
         this.itemID = document.createElement("div");
         this.nameDiv = document.createElement("div");
         this.shortnameDiv = document.createElement("div");
-        this.weight = document.createElement("div");
-        this.highalch = document.createElement("div");
-        this.lowalch = document.createElement("div");
+        //this.weight = document.createElement("div");
+
         this.stackable = document.createElement("div");
         this.tradeable = document.createElement("div");
-        this.equipable = document.createElement("div");
+        this.noteable = document.createElement("div");
+        this.members = document.createElement("div");
+        this.specialstoreprice = document.createElement("div");
+        this.generalstoreprice = document.createElement("div");
+        this.highalch = document.createElement("div");
+        this.lowalch = document.createElement("div");
         this.slot = document.createElement("div");
-        this.attackspeed = document.createElement("div");
         this.stabattackbonus = document.createElement("div");
         this.slashattackbonus = document.createElement("div");
         this.crushattackbonus = document.createElement("div");
@@ -33,6 +36,10 @@ class Item {
         this.rangeddefensebonus = document.createElement("div");
         this.strengthbonus = document.createElement("div");
         this.prayerbonus = document.createElement("div");
+        this.noted = document.createElement("div");
+        this.parentId = document.createElement("div");
+        this.notedId = document.createElement("div");
+        this.examine = document.createElement("div");
 
 
         this.itemID.innerHTML = itemID;
@@ -40,14 +47,20 @@ class Item {
         this.color = "";
         this.shortname = "Blank";
         this.shortcolor = "";
-        this.weight.innerHTML = "0";
-        this.highalch.innerHTML = "0";
-        this.lowalch.innerHTML = "0";
+        this.examine.innerHTML = "Blank";
+        this.slot.innerHTML = "Blank";
+        //this.weight.innerHTML = "0";
+        this.noted.innerHTML = false;
+        this.noteable.innerHTML = true;
         this.stackable.innerHTML = false;
         this.tradeable.innerHTML = true;
-        this.equipable.innerHTML = true;
-        this.slot.innerHTML = "Blank";
-        this.attackspeed.innerHTML = 0;
+        this.parentId.innerHTML = 0;
+        this.notedId.innerHTML = 0;
+        this.members.innerHTML = false;
+        this.specialstoreprice.innerHTML = 0;
+        this.generalstoreprice.innerHTML = 0;
+        this.highalch.innerHTML = "0";
+        this.lowalch.innerHTML = "0";
         this.stabattackbonus.innerHTML = 0;
         this.slashattackbonus.innerHTML = 0;
         this.crushattackbonus.innerHTML = 0;
@@ -61,19 +74,22 @@ class Item {
         this.strengthbonus.innerHTML = 0;
         this.prayerbonus.innerHTML = 0;
 
+
         document.getElementById("itemcanvas").appendChild(this.item); //add div to mapcanvas
 
         this.item.appendChild(this.itemID);
         this.item.appendChild(this.nameDiv);
         this.item.appendChild(this.shortnameDiv);
-        this.item.appendChild(this.weight);
-        this.item.appendChild(this.highalch);
-        this.item.appendChild(this.lowalch);
+        //this.item.appendChild(this.weight);
         this.item.appendChild(this.stackable);
         this.item.appendChild(this.tradeable);
-        this.item.appendChild(this.equipable);
+        this.item.appendChild(this.noteable);
+        this.item.appendChild(this.members);
+        this.item.appendChild(this.specialstoreprice);
+        this.item.appendChild(this.generalstoreprice);
+        this.item.appendChild(this.highalch);
+        this.item.appendChild(this.lowalch);
         this.item.appendChild(this.slot);
-        this.item.appendChild(this.attackspeed);
         this.item.appendChild(this.stabattackbonus);
         this.item.appendChild(this.slashattackbonus);
         this.item.appendChild(this.crushattackbonus);
@@ -86,6 +102,10 @@ class Item {
         this.item.appendChild(this.rangeddefensebonus);
         this.item.appendChild(this.strengthbonus);
         this.item.appendChild(this.prayerbonus);
+        this.item.appendChild(this.noted);
+        this.item.appendChild(this.parentId);
+        this.item.appendChild(this.notedId);
+        this.item.appendChild(this.examine);
     }
 }
 
@@ -102,12 +122,14 @@ const INPUT_NAME = document.getElementById("input-name");
 const INPUT_COLOR = document.getElementById("input-color");
 const INPUT_SHORTNAME = document.getElementById("input-shortname");
 const INPUT_SHORTCOLOR = document.getElementById("input-shortcolor");
-const INPUT_WEIGHT = document.getElementById("input-weight");
+//const INPUT_WEIGHT = document.getElementById("input-weight");
 const INPUT_HIGHALC = document.getElementById("input-highalc");
 const INPUT_LOWALC = document.getElementById("input-lowalc");
 const INPUT_STACKABLE = document.getElementById("input-stackable");
 const INPUT_TRADEABLE = document.getElementById("input-tradeable");
-const INPUT_EQUIPABLE = document.getElementById("input-equipable");
+const INPUT_NOTEABLE = document.getElementById("input-noteable");
+const INPUT_MEMBERS = document.getElementById("input-members");
+const INPUT_COLORPASTE = document.getElementById("input-colorpaste");
 
 /*
 const INPUT_=document.getElementById("");
@@ -137,26 +159,48 @@ for (id = 0; id < maxItem; id++) { //create grid of wrappers/spans, xMax by yMax
 */
 //-------------------------------------EVENT LISTENERS-------------------------------------------------------
 
-document.addEventListener('keydown', function (e) {
-    if (keycode(e) === "enter") {
-        enterPressed = true;
-        console.log(enterPressed);
-    }
-})
-//-------------------------------------FUNCTIONS-------------------------------------------------------
+document.addEventListener('keydown', function(e) {
+        console.log(keycode(e));
+        if (keycode(e) === "enter") {
+            enterPressed = true;
+        } else if (keycode(e) === "down") {
+
+            clickedOnitem(parseInt(selectedItem) + 1);
+
+        } else if (keycode(e) === "up") {
+            clickedOnitem(parseInt(selectedItem) - 1);
+
+        } else if (keycode(e) === "f1") {
+            colorPaste(parseInt());
+        }
+
+
+    })
+    //-------------------------------------FUNCTIONS-------------------------------------------------------
 function clickedOnitem(id) {
     selectedItem = id;
     INPUT_NAME.value = items[selectedItem].name;
     INPUT_COLOR.value = items[selectedItem].color;
     INPUT_SHORTNAME.value = items[selectedItem].shortname;
+    INPUT_SHORTNAME.focus();
     INPUT_SHORTCOLOR.value = items[selectedItem].shortcolor;
-    INPUT_WEIGHT.value = items[selectedItem].weight;
-    INPUT_HIGHALC.value = items[selectedItem].highalch
-    INPUT_LOWALC.value = items[selectedItem].lowalch;
+    //INPUT_WEIGHT.value = items[selectedItem].weight;
+
+    INPUT_HIGHALC.value = items[selectedItem].highalch.innerHTML;
+    INPUT_LOWALC.value = items[selectedItem].lowalch.innerHTML;
     INPUT_STACKABLE.checked = items[selectedItem].stackable;
     INPUT_TRADEABLE.value = items[selectedItem].tradeable;
-    INPUT_EQUIPABLE.value = items[selectedItem].equipable;
+    INPUT_NOTEABLE.value = items[selectedItem].noteable;
+    INPUT_MEMBERS.value = items[selectedItem].members;
 
+}
+
+function colorPaste() {
+
+    var lettercount = items[selectedItem].name.length;
+    var colorpastestring = INPUT_COLORPASTE.value.repeat(lettercount);
+    items[selectedItem].color = colorpastestring;
+    createName();
 }
 
 function createName() {
@@ -186,9 +230,9 @@ function createShortname() {
 
 function addEquipment() {
     items.push(new Item(items.length));
-    
+
     //for (var i = 0; i < items[selectedItem].shortname.length; i++) {
-      
+
     //}
 }
 
@@ -198,8 +242,7 @@ function colorSpan(span, colorstring, colorIndex) {
     try { //get colorcode in format "fg,bg,fg,bg..." etc. no commas
         fg = colorstring.charAt(colorIndex * 2);
         bg = colorstring.charAt(colorIndex * 2 + 1);
-    }
-    catch {
+    } catch {
         fg = "p";
         bg = "0";
         console.log("nocolor");
@@ -214,8 +257,7 @@ function colorShortSpan(span, colorstring, colorIndex) {
     try { //get colorcode in format "fg,bg,fg,bg..." etc. no commas
         fg = colorstring.charAt(colorIndex * 2);
         bg = colorstring.charAt(colorIndex * 2 + 1);
-    }
-    catch {
+    } catch {
         fg = "p";
         bg = "0";
         console.log("nocolor");
@@ -256,43 +298,53 @@ function loadItemDB() {
     //loads map xml data synchronously
     try {
         var xml = fs.readFileSync('itemdb.xml', 'utf8');
-    }
-    catch (e) {
+    } catch (e) {
         console.log('Error:', e.stack);
     }
 
     var parser = new DOMParser();
     var xmlDoc = parser.parseFromString(xml, "text/xml"); //parse xml string
-    var nodes = xmlDoc.getElementsByTagName("Equipment"); //get list of room nodes
+    var nodes = xmlDoc.getElementsByTagName("itemDefinition"); //get list of item definitions
 
     //try {
-    for (var i = 0; i < nodes.length; i++) { //iterate over list of room nodes and load room properties
+    //for (var i = 0; i < 2; i++) { //iterate over list of items
+    for (var i = 0; i < nodes.length; i++) { //iterate over list of items
         items.push(new Item(i));
         items[i].itemID = nodes[i].getElementsByTagName("id")[0].innerHTML
         items[i].name = nodes[i].getElementsByTagName("name")[0].innerHTML;
-        items[i].color = nodes[i].getElementsByTagName("color")[0].innerHTML;
         items[i].shortname = nodes[i].getElementsByTagName("shortname")[0].innerHTML;
+        items[i].color = nodes[i].getElementsByTagName("color")[0].innerHTML;
         items[i].shortcolor = nodes[i].getElementsByTagName("shortcolor")[0].innerHTML;
-        items[i].weight.innerHTML = nodes[i].getElementsByTagName("weight")[0].innerHTML;
-        items[i].highalch.innerHTML = nodes[i].getElementsByTagName("highalchemy")[0].innerHTML;
-        items[i].lowalch.innerHTML = nodes[i].getElementsByTagName("lowalchemy")[0].innerHTML;
+        items[i].examine.innerHTML = nodes[i].getElementsByTagName("examine")[0].innerHTML;
+        items[i].slot.innerHTML = nodes[i].getElementsByTagName("equipmentType")[0].innerHTML;
+        //items[i].weight.innerHTML = nodes[i].getElementsByTagName("weight")[0].innerHTML;
+        items[i].noted.innerHTML = nodes[i].getElementsByTagName("noted")[0].innerHTML;
+        items[i].noteable.innerHTML = nodes[i].getElementsByTagName("noteable")[0].innerHTML;
         items[i].stackable.innerHTML = nodes[i].getElementsByTagName("stackable")[0].innerHTML;
         items[i].tradeable.innerHTML = nodes[i].getElementsByTagName("tradeable")[0].innerHTML;
-        items[i].equipable.innerHTML = nodes[i].getElementsByTagName("equipable")[0].innerHTML;
-        items[i].slot.innerHTML = nodes[i].getElementsByTagName("slot")[0].innerHTML;
-        items[i].attackspeed.innerHTML = nodes[i].getElementsByTagName("speed")[0].innerHTML;
-        items[i].stabattackbonus.innerHTML = nodes[i].getElementsByTagName("stabattackbonus")[0].innerHTML;
-        items[i].slashattackbonus.innerHTML = nodes[i].getElementsByTagName("slashattackbonus")[0].innerHTML;
-        items[i].crushattackbonus.innerHTML = nodes[i].getElementsByTagName("crushattackbonus")[0].innerHTML;
-        items[i].magicattackbonus.innerHTML = nodes[i].getElementsByTagName("magicattackbonus")[0].innerHTML;
-        items[i].rangedattackbonus.innerHTML = nodes[i].getElementsByTagName("rangedattackbonus")[0].innerHTML;
-        items[i].stabdefensebonus.innerHTML = nodes[i].getElementsByTagName("stabdefensebonus")[0].innerHTML;
-        items[i].slashdefensebonus.innerHTML = nodes[i].getElementsByTagName("slashdefensebonus")[0].innerHTML;
-        items[i].crushdefensebonus.innerHTML = nodes[i].getElementsByTagName("crushdefensebonus")[0].innerHTML;
-        items[i].magicdefensebonus.innerHTML = nodes[i].getElementsByTagName("magicdefensebonus")[0].innerHTML;
-        items[i].rangeddefensebonus.innerHTML = nodes[i].getElementsByTagName("rangeddefensebonus")[0].innerHTML;
-        items[i].strengthbonus.innerHTML = nodes[i].getElementsByTagName("strengthbonus")[0].innerHTML;
-        items[i].prayerbonus.innerHTML = nodes[i].getElementsByTagName("prayerbonus")[0].innerHTML;
+        items[i].parentId.innerHTML = nodes[i].getElementsByTagName("parentId")[0].innerHTML;
+        items[i].notedId.innerHTML = nodes[i].getElementsByTagName("notedId")[0].innerHTML;
+        items[i].members.innerHTML = nodes[i].getElementsByTagName("members")[0].innerHTML;
+        items[i].specialstoreprice.innerHTML = nodes[i].getElementsByTagName("specialStorePrice")[0].innerHTML;
+        items[i].generalstoreprice.innerHTML = nodes[i].getElementsByTagName("generalStorePrice")[0].innerHTML;
+        items[i].highalch.innerHTML = nodes[i].getElementsByTagName("highAlchValue")[0].innerHTML;
+        items[i].lowalch.innerHTML = nodes[i].getElementsByTagName("lowAlchValue")[0].innerHTML;
+
+
+        var bonuses = nodes[i].getElementsByTagName("bonuses")[0].children;
+
+        items[i].stabattackbonus.innerHTML = bonuses[0].innerHTML;
+        items[i].slashattackbonus.innerHTML = bonuses[1].innerHTML;
+        items[i].crushattackbonus.innerHTML = bonuses[2].innerHTML;
+        items[i].magicattackbonus.innerHTML = bonuses[3].innerHTML;
+        items[i].rangedattackbonus.innerHTML = bonuses[4].innerHTML;
+        items[i].stabdefensebonus.innerHTML = bonuses[5].innerHTML;
+        items[i].slashdefensebonus.innerHTML = bonuses[6].innerHTML;
+        items[i].crushdefensebonus.innerHTML = bonuses[7].innerHTML;
+        items[i].magicdefensebonus.innerHTML = bonuses[8].innerHTML;
+        items[i].rangeddefensebonus.innerHTML = bonuses[9].innerHTML;
+        items[i].strengthbonus.innerHTML = bonuses[10].innerHTML;
+        items[i].prayerbonus.innerHTML = bonuses[11].innerHTML;
 
         for (var n = 0; n < items[i].name.length; n++) { //create span for each letter of the item name
             var letter = document.createElement("span");
@@ -327,34 +379,44 @@ function saveItemDB() {
     xw.writeStartElement('ItemDB');
 
     //write Equipment
-    xw.writeStartElement('EquipmentDB');
     for (var i = 0; i < items.length; i++) {
-        xw.writeStartElement('Equipment');
+        xw.writeStartElement('itemDefinition');
         xw.writeElementString('id', items[i].item.id);
         xw.writeElementString('name', items[i].name);
-        xw.writeElementString('color', items[i].color);
         xw.writeElementString('shortname', items[i].shortname);
+        xw.writeElementString('color', items[i].color);
         xw.writeElementString('shortcolor', items[i].shortcolor);
-        xw.writeElementString('weight', items[i].weight.innerHTML);
-        xw.writeElementString('highalchemy', items[i].highalch.innerHTML);
-        xw.writeElementString('lowalchemy', items[i].lowalch.innerHTML);
+        xw.writeElementString('examine', items[i].examine.innerHTML);
+        xw.writeElementString('equipmentType', items[i].slot.innerHTML);
+        //xw.writeElementString('weight', items[i].weight.innerHTML);
+
+        xw.writeElementString('noted', items[i].stackable.innerHTML);
+        xw.writeElementString('noteable', items[i].stackable.innerHTML);
         xw.writeElementString('stackable', items[i].stackable.innerHTML);
         xw.writeElementString('tradeable', items[i].tradeable.innerHTML);
-        xw.writeElementString('equipable', items[i].equipable.innerHTML);
-        xw.writeElementString('slot', items[i].slot.innerHTML);
-        xw.writeElementString('speed', items[i].attackspeed.innerHTML);
-        xw.writeElementString('stabattackbonus', items[i].stabattackbonus.innerHTML);
-        xw.writeElementString('slashattackbonus', items[i].slashattackbonus.innerHTML);
-        xw.writeElementString('crushattackbonus', items[i].crushattackbonus.innerHTML);
-        xw.writeElementString('magicattackbonus', items[i].magicattackbonus.innerHTML);
-        xw.writeElementString('rangedattackbonus', items[i].rangedattackbonus.innerHTML);
-        xw.writeElementString('stabdefensebonus', items[i].stabdefensebonus.innerHTML);
-        xw.writeElementString('slashdefensebonus', items[i].slashdefensebonus.innerHTML);
-        xw.writeElementString('crushdefensebonus', items[i].crushdefensebonus.innerHTML);
-        xw.writeElementString('magicdefensebonus', items[i].magicdefensebonus.innerHTML);
-        xw.writeElementString('rangeddefensebonus', items[i].rangeddefensebonus.innerHTML);
-        xw.writeElementString('strengthbonus', items[i].strengthbonus.innerHTML);
-        xw.writeElementString('prayerbonus', items[i].prayerbonus.innerHTML);
+        xw.writeElementString('parentId', items[i].parentId.innerHTML);
+        xw.writeElementString('notedId', items[i].notedId.innerHTML);
+        xw.writeElementString('members', items[i].members.innerHTML);
+        xw.writeElementString('specialStorePrice', items[i].specialstoreprice.innerHTML);
+        xw.writeElementString('generalStorePrice', items[i].generalstoreprice.innerHTML);
+        xw.writeElementString('highAlchValue', items[i].highalch.innerHTML);
+        xw.writeElementString('lowAlchValue', items[i].lowalch.innerHTML);
+
+        xw.writeStartElement('bonuses');
+        xw.writeElementString('int', items[i].stabattackbonus.innerHTML);
+        xw.writeElementString('int', items[i].slashattackbonus.innerHTML);
+        xw.writeElementString('int', items[i].crushattackbonus.innerHTML);
+        xw.writeElementString('int', items[i].magicattackbonus.innerHTML);
+        xw.writeElementString('int', items[i].rangedattackbonus.innerHTML);
+        xw.writeElementString('int', items[i].stabdefensebonus.innerHTML);
+        xw.writeElementString('int', items[i].slashdefensebonus.innerHTML);
+        xw.writeElementString('int', items[i].crushdefensebonus.innerHTML);
+        xw.writeElementString('int', items[i].magicdefensebonus.innerHTML);
+        xw.writeElementString('int', items[i].rangeddefensebonus.innerHTML);
+        xw.writeElementString('int', items[i].strengthbonus.innerHTML);
+        xw.writeElementString('int', items[i].prayerbonus.innerHTML);
+        xw.writeEndElement();
+
         xw.writeEndElement();
     }
     xw.writeEndElement();
@@ -370,7 +432,7 @@ function saveItemDB() {
     } else {
         asString = xw.getDocument().xml;
     }
-    fs.writeFile("itemdb.xml", asString, function (err) {
+    fs.writeFile("itemdb.xml", asString, function(err) {
         if (err) {
             return console.log(err);
         }

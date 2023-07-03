@@ -1,8 +1,7 @@
 const { app, Menu, BrowserWindow } = require('electron');
 
 
-const template = [
-    {
+const template = [{
         label: 'Mode',
         submenu: [
             { label: 'Edit RoomDB', click() { createRoomWindow() } },
@@ -23,7 +22,8 @@ const template = [
             { type: 'separator' },
             { role: 'togglefullscreen' }
         ]
-    }];
+    }
+];
 
 const menu = Menu.buildFromTemplate(template);
 Menu.setApplicationMenu(menu);
@@ -52,4 +52,4 @@ function createItemWindow() {
     win.loadFile('item.html');
 }
 
-app.whenReady().then(createRoomWindow);
+app.whenReady().then(createItemWindow);

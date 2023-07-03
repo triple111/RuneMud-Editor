@@ -17,7 +17,7 @@ function XMLWriter(encoding, version) {
         this.version = version;
 };
 
-(function () {
+(function() {
 
     XMLWriter.prototype = {
         encoding: 'ISO-8859-1', // what is the encoding
@@ -27,22 +27,22 @@ function XMLWriter(encoding, version) {
         indentation: 1, //how many indentChar to add per level
         newLine: '\n', //character to separate nodes when formatting
         //start a new document, cleanup if we are reusing
-        writeStartDocument: function (standalone) {
+        writeStartDocument: function(standalone) {
             this.close(); //cleanup
             this.stack = [];
             this.standalone = standalone;
         },
         //get back to the root
-        writeEndDocument: function () {
+        writeEndDocument: function() {
             this.active = this.root;
             this.stack = [];
         },
         //set the text of the doctype
-        writeDocType: function (dt) {
+        writeDocType: function(dt) {
             this.doctype = dt;
         },
         //start a new node with this name, and an optional namespace
-        writeStartElement: function (name, ns) {
+        writeStartElement: function(name, ns) {
             if (ns) //namespace
                 name = ns + ':' + name;
 
@@ -60,52 +60,52 @@ function XMLWriter(encoding, version) {
             this.active = node;
         },
         // Delete last node
-        deleteEndElement: function () {
+        deleteEndElement: function() {
             this.stack.pop();
             this.active.c.pop();
         },
         //go up one node, if we are in the root, ignore it
-        writeEndElement: function () {
+        writeEndElement: function() {
             this.active = this.stack.pop() || this.root;
         },
         //add an attribute to the active node
-        writeAttributeString: function (name, value) {
+        writeAttributeString: function(name, value) {
             if (this.active)
                 this.active.a[name] = htmlAttr(value);
         },
-		//add a pre-escaped attribute to the active node
-		writeRawAttributeString:function(name, value) {
-			if (this.active)
-				this.active.a[name] = value;
-		},			
+        //add a pre-escaped attribute to the active node
+        writeRawAttributeString: function(name, value) {
+            if (this.active)
+                this.active.a[name] = value;
+        },
         //add a text node to the active node
-        writeString: function (text) {
+        writeString: function(text) {
             if (this.active)
                 this.active.c.push(html(text));
         },
         //add plain xml content to the active node without any further checks and escaping
-        writeXML: function (text) {
+        writeXML: function(text) {
             if (this.active)
                 this.active.c.push(text);
         },
         //shortcut, open an element, write the text and close
-        writeElementString: function (name, text, ns) {
+        writeElementString: function(name, text, ns) {
             this.writeStartElement(name, ns);
             this.writeString(html(text));
             this.writeEndElement();
         },
         //add a text node wrapped with CDATA
-        writeCDATA: function (text) {
+        writeCDATA: function(text) {
             // keep nested CDATA
             text = text.replace(/>>]/g, "]]><![CDATA[>");
             this.writeString('<![CDATA[' + text + ']]>');
         },
         //add a text node wrapped in a comment
-        writeComment: function (text) {
+        writeComment: function(text) {
             this.writeString('<!-- ' + text + ' -->');
         },
         //generate the xml string, you can skip closing the last nodes
-        flush: function () {
+        flush: function() {
             if (this.stack && this.stack[0]) //ensure it's closed
                 this.writeEndDocument();
 
@@ -136,41 +136,41 @@ function XMLWriter(encoding, version) {
             return buffer.join(formatting ? this.newLine : '');
         },
         //cleanup, don't use again without calling startDocument
-        close: function () {
+        close: function() {
             if (this.root)
                 clean(this.root);
             this.active = this.root = this.stack = null;
         },
-        getDocument: window.ActiveXObject ? function () { //MSIE
+        getDocument: window.ActiveXObject ? function() { //MSIE
             var doc = new ActiveXObject('Microsoft.XMLDOM');
             doc.async = false;
             doc.loadXML(this.flush());
             return doc;
-        } : function () { // Mozilla, Firefox, Opera, etc.						
+        } : function() { // Mozilla, Firefox, Opera, etc.						
             return (new DOMParser()).parseFromString(this.flush(), 'text/xml');
         }
     };
 
-	var ESCAPES = {
-		'&': '&amp;',
-		'<': '&lt;',
-		'>': '&gt;',
-		'"': '&quot;',
-		'\t': '&#9;',
-		'\n': '&#10;',
-		'\r': '&#13;'
-	};
+    var ESCAPES = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        '\t': '&#9;',
+        '\n': '&#10;',
+        '\r': '&#13;'
+    };
 
-	function html(s) {
-		return s.replace(/[&<>"]/g, function (c) { return ESCAPES[c]; });
-	}
-    
-	// Escape whitespace in attributes so it is preserved during in-browser
-	// serialize/parse round-trip.
-	// See http://www.w3.org/TR/REC-xml/#AVNormalize for browser parsing rules.
-	function htmlAttr(s) {
-		return String(s).replace(/[&<>"\n\r\t]/g, function (c) { return ESCAPES[c]; });
-	}
+    function html(s) {
+        return s.replace(/[&<>"]/g, function(c) { return ESCAPES[c]; });
+    }
+
+    // Escape whitespace in attributes so it is preserved during in-browser
+    // serialize/parse round-trip.
+    // See http://www.w3.org/TR/REC-xml/#AVNormalize for browser parsing rules.
+    function htmlAttr(s) {
+        return String(s).replace(/[&<>"\n\r\t]/g, function(c) { return ESCAPES[c]; });
+    }
 
     //utility, you don't need it
     function clean(node) {
