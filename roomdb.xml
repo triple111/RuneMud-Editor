@@ -112421,7 +112421,7 @@
     <tile>[^]</tile>
     <color>ala000</color>
     <object>Blank</object>
-    <borders>0110</borders>
+    <borders>1001</borders>
   </Room>
   <Room>
     <id>14053</id>
@@ -114010,9 +114010,9 @@
   <Room>
     <id>14251</id>
     <name>Tutorial Island</name>
-    <tile>,,,</tile>
-    <color>kkk000</color>
-    <object>Blank</object>
+    <tile>,T,</tile>
+    <color>klk000</color>
+    <object>Tree</object>
     <borders>0110</borders>
   </Room>
   <Room>
@@ -114034,9 +114034,9 @@
   <Room>
     <id>14254</id>
     <name>Tutorial Island</name>
-    <tile>,,|</tile>
-    <color>kka000</color>
-    <object>Blank</object>
+    <tile>,T|</tile>
+    <color>kla000</color>
+    <object>Tree</object>
     <borders>1011</borders>
   </Room>
   <Room>
@@ -114818,9 +114818,9 @@
   <Room>
     <id>14352</id>
     <name>Tutorial Island</name>
-    <tile>,,,</tile>
-    <color>kkk000</color>
-    <object>Blank</object>
+    <tile>T,,</tile>
+    <color>lkk000</color>
+    <object>Tree</object>
     <borders>1111</borders>
   </Room>
   <Room>
@@ -114828,7 +114828,7 @@
     <name>Tutorial Island</name>
     <tile>:::</tile>
     <color>lll000</color>
-    <object>Blank</object>
+    <object>Fishing spot</object>
     <borders>1101</borders>
   </Room>
   <Room>
@@ -115618,9 +115618,9 @@
   <Room>
     <id>14452</id>
     <name>Tutorial Island</name>
-    <tile>,,,</tile>
-    <color>kkk000</color>
-    <object>Blank</object>
+    <tile>,T,</tile>
+    <color>klk000</color>
+    <object>Tree</object>
     <borders>1001</borders>
   </Room>
   <Room>
